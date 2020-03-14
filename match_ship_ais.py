@@ -48,9 +48,9 @@ def match_ship_in_ais(train_file, ais_file, use_lat_lon=False):
         merge_df['cnt'] = merge_df.groupby('ID')['ais_id'].transform('nunique')
         merge_df = merge_df[merge_df['cnt'] == 1]
         del merge_df['cnt']
-        print('now match records num:', merge_df.shape[0])
+        print('now match records num:', merge_df['ID'].nunique())
         match_df = match_df.append(merge_df)
-        print('total match records num:', match_df.shape[0])
+        print('total match records num:', match_df['ID'].nunique())
         print('#'*100)
     return match_df
 
