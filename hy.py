@@ -16,6 +16,7 @@ from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 import lightgbm as lgb
 import os
 import warnings
+from utils import geohash_encode
 
 warnings.filterwarnings('ignore')
 os.environ['PYTHONHASHSEED'] = '0'
@@ -32,44 +33,6 @@ def transform_xy2lonlat(df):
     p = Proj("+proj=omerc +lat_0=-36 +lonc=147 +alpha=-54 +k=1 +x_0=0 +y_0=0 +gamma=0 +ellps=WGS84 +towgs84=0,0,0,0,0,0,0")
     df['lon'], df['lat'] = p(x, y, inverse=True)
     return df
-
-
-# reference: https://github.com/vinsci/geohash
-def geohash_encode(latitude, longitude, precision=12):
-    """
-    Encode a position given in float arguments latitude, longitude to
-    a geohash which will have the character count precision.
-    """
-    lat_interval, lon_interval = (-90.0, 90.0), (-180.0, 180.0)
-    base32 = '0123456789bcdefghjkmnpqrstuvwxyz'
-    geohash = []
-    bits = [16, 8, 4, 2, 1]
-    bit = 0
-    ch = 0
-    even = True
-    while len(geohash) < precision:
-        if even:
-            mid = (lon_interval[0] + lon_interval[1]) / 2
-            if longitude > mid:
-                ch |= bits[bit]
-                lon_interval = (mid, lon_interval[1])
-            else:
-                lon_interval = (lon_interval[0], mid)
-        else:
-            mid = (lat_interval[0] + lat_interval[1]) / 2
-            if latitude > mid:
-                ch |= bits[bit]
-                lat_interval = (mid, lat_interval[1])
-            else:
-                lat_interval = (lat_interval[0], mid)
-        even = not even
-        if bit < 4:
-            bit += 1
-        else:
-            geohash += base32[ch]
-            bit = 0
-            ch = 0
-    return ''.join(geohash)
 
 
 def tfidf(input_values, output_num, output_prefix, seed=1024):
