@@ -27,10 +27,11 @@ def hashfxn(astring):
 
 
 # 平面坐标转经纬度，供初赛数据使用，复赛可直接忽略
+# 标准为西安1980，查询链接：https://mygeodata.cloud/cs2cs/
 def transform_xy2lonlat(df):
     x = df['x'].values
     y = df['y'].values
-    p = Proj("+proj=omerc +lat_0=-36 +lonc=147 +alpha=-54 +k=1 +x_0=0 +y_0=0 +gamma=0 +ellps=WGS84 +towgs84=0,0,0,0,0,0,0")
+    p = Proj("+proj=tmerc +lat_0=0 +lon_0=120 +k=1 +x_0=500000 +y_0=0 +a=6378140 +b=6356755.288157528 +units=m +no_defs")
     df['lon'], df['lat'] = p(x, y, inverse=True)
     return df
 
