@@ -70,7 +70,7 @@ def match_ship_in_ais(train_file, ais_file, threshold, cnt_limit=50):
     return match_df
 
 
-# 可视化匹配成功的数据，再做筛选
+# 可视化匹配成功的数据，再做筛选，可通过fastdtw等方法
 def compare_plot(ids, ais_file):
     map_net = {'刺网': 'cw', '围网': 'ww', '拖网': 'tw'}
     fig = plt.figure(figsize=(8, 4))
@@ -84,6 +84,49 @@ def compare_plot(ids, ais_file):
     plt.subplot(2, 2, 2)
     plt.scatter(ais['lat'], ais['lon'], color='red')
     fig.suptitle(f'match ID:{ids[0]}, type: {left_type}, ais_id:{ids[1]}, ais_file:{ids[2]}')
+    plt.show()
+
+
+# 每日小时的渔船count
+def stat_hour(ais_file):
+    paths = os.listdir(ais_file)
+    df = pd.DataFrame()
+    for t in tqdm(range(len(paths))):
+        p = paths[t]
+        ais = pd.read_csv(f'{ais_file}/{p}')
+        ais['hour'] = ais['time'].apply(lambda x: x.split(' ')[0]+x.split(' ')[1][:2])
+        temp = ais.groupby('hour')['ais_id'].agg('nunique').reset_index()
+        df = df.append(temp)
+    return df
+
+
+# 获取指定ais设备的数据
+def get_record(ais_file, ids):
+    paths = os.listdir(ais_file)
+    df = pd.DataFrame()
+    for t in tqdm(range(len(paths))):
+        p = paths[t]
+        ais = pd.read_csv(f'{ais_file}/{p}')
+        ais = ais[ais['ais_id'] == ids]
+        ais['date'] = int(p[11:19])
+        df = df.append(ais)
+    return df
+
+
+# 可视化ais设备轨迹
+def plot_record(df):
+    n_days = df['date'].nunique()
+    rows = n_days//6
+    date_list = sorted(df['date'].unique())[:6*rows]
+    fig, axs = plt.subplots(rows, 6, figsize=(18, 12))
+
+    for i, j in enumerate(date_list):
+        tmp = df[df['date'] == j]
+        tmp.sort_values('time', inplace=True)
+        axs[i % rows][i//rows].scatter(tmp['lat'], tmp['lon'])
+        axs[i % rows][i//rows].set_title(j)
+        axs[i % rows][i//rows].set_xticks([])
+        axs[i % rows][i//rows].set_yticks([])
     plt.show()
 
 
