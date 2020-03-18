@@ -93,7 +93,7 @@ def get_sample_tfidf(df, group_id, group_target, num):
 def w2v_feat(df, group_id, feat, length):
     print('start word2vec ...')
     data_frame = df.groupby(group_id)[feat].agg(list).reset_index()
-    model = Word2Vec(data_frame[feat].values, size=length, window=5, min_count=1,
+    model = Word2Vec(data_frame[feat].values, size=length, window=5, min_count=1, sg=1, hs=1,
                      workers=1, iter=10, seed=1, hashfxn=hashfxn)
     data_frame[feat] = data_frame[feat].apply(lambda x: pd.DataFrame([model[c] for c in x]))
     for m in range(length):
@@ -106,7 +106,8 @@ def d2v_feat(df, group_id, feat, length):
     print('start doc2vec ...')
     data_frame = df.groupby(group_id)[feat].agg(list).reset_index()
     documents = [TaggedDocument(doc, [i]) for i, doc in zip(data_frame[group_id].values, data_frame[feat])]
-    model = Doc2Vec(documents, vector_size=length, window=5, min_count=1, workers=1, seed=1, hashfxn=hashfxn, epochs=10)
+    model = Doc2Vec(documents, vector_size=length, window=5, min_count=1, workers=1, seed=1, hashfxn=hashfxn, 
+                    epochs=10, sg=1, hs=1)
     doc_df = data_frame[group_id].apply(lambda x: ','.join([str(i) for i in model[x]])).str.split(',', expand=True).apply(pd.to_numeric)
     doc_df.columns = ['{}_d2v_{}'.format(feat, i) for i in range(length)]
     return pd.concat([data_frame[[group_id]], doc_df], axis=1)
