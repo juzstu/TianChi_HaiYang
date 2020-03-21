@@ -2,7 +2,7 @@
 # -*- coding:utf-8 -*-
 # author:juzphy
 # datetime:2020/3/14 11:07 下午
-from utils import geohash_encode
+
 import os
 import pandas as pd
 from tqdm import tqdm
