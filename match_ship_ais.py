@@ -6,7 +6,11 @@ from utils import geohash_encode
 import os
 import pandas as pd
 from tqdm import tqdm
+from sklearn.manifold import TSNE
+from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
+import matplotlib.colors as cl
+import random
 
 
 def match_ship_in_ais(train_file, ais_file, threshold, cnt_limit=50):
@@ -127,6 +131,40 @@ def plot_record(df):
         axs[i % rows][i//rows].set_title(j)
         axs[i % rows][i//rows].set_xticks([])
         axs[i % rows][i//rows].set_yticks([])
+    plt.show()
+
+
+# 线性插值
+def liner_insert_values(df):
+    df['time'] = df['time'].apply(
+        lambda x: '2019-' + x.split(' ')[0][:2] + '-' + x.split(' ')[0][2:] + ' ' + x.split(' ')[1][:-2] + '00')
+    df['time'] = pd.to_datetime(df['time'])
+    df = df.set_index('time')
+    ship_id = df['ID'].unique()[0]
+    df = df.resample('10T', closed='left')[['lat', 'lon']].mean().reset_index()
+    df['lat'] = df['lat'].interpolate()
+    df['lon'] = df['lon'].interpolate()
+    df['ID'] = ship_id
+    return df
+
+
+def show_cluster(df, use_cols, n_clusters):
+    km = KMeans(n_clusters=n_clusters, random_state=2019)
+    df['type'] = km.fit_predict(df[use_cols])
+    tsne_model = TSNE(n_components=2, random_state=1024)
+    tsne_model.fit_transform(df[use_cols])
+    tsne_df = pd.DataFrame(tsne_model.embedding_, index=df.index)
+    tsne_df['type'] = df['type']
+
+    color_list = random.sample(cl.cnames.keys(), n_clusters)
+
+    for n, c in zip(range(n_clusters), color_list):
+        d = tsne_df[tsne_df['type'] == n]
+        plt.plot(d[0], d[1], color=c, marker='.', linestyle='')
+    plt.legend(range(n_clusters))
+    plt.xticks([])
+    plt.yticks([])
+
     plt.show()
 
 
