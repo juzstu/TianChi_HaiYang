@@ -14,4 +14,6 @@
 #### 感谢队友在此次比赛的辛苦付出，祝OTTO在未来的比赛中可以再接再厉，同时OTTO也希望和更多的数据挖掘和算法爱好者的交流，非诚勿扰。
 #### 以下为队友的联系方式
 - wbbhcb：QQ-282775205，微信公众号-量化小白成长之路
-#### Respect for every competition player who was pursing the pure goal and working hard for this.
+
+
+#### 花开朵朵引蜂勤，楼起高高假作荫。冠绝千人弹相庆，圈得散兵志立新。
