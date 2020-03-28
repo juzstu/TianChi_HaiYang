@@ -11,9 +11,12 @@ from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
 import matplotlib.colors as cl
 import random
+from fastdtw import fastdtw
+from scipy.spatial.distance import euclidean
 
 
-def match_ship_in_ais(train_file, ais_file, threshold, cnt_limit=50):
+# step 1：粗匹配
+def match_ship_in_ais_step1(train_file, ais_file, threshold, cnt_limit=50):
     paths = os.listdir(ais_file)
     match_df = pd.DataFrame()
 
@@ -24,7 +27,7 @@ def match_ship_in_ais(train_file, ais_file, threshold, cnt_limit=50):
     train['lat'] = train['lat'].round(2)
     train['lon'] = train['lon'].round(2)
     print('origin train records num:', train.shape[0])
-    train['time'] = train['time'].apply(lambda x:x[:4])
+    train['time'] = train['time'].apply(lambda x: x[:4])
     train = train.drop_duplicates(subset=['ID', 'time', 'lat', 'lon'])
     print('after drop duplicates, train records num:', train.shape[0])
 
@@ -74,21 +77,25 @@ def match_ship_in_ais(train_file, ais_file, threshold, cnt_limit=50):
     return match_df
 
 
-# 可视化匹配成功的数据，再做筛选，可通过fastdtw等方法
-def compare_plot(ids, ais_file):
+# step 2：细匹配并可视化匹配结果
+def match_ship_in_ais_step2(ids, train_file, ais_file, threshold):
     map_net = {'刺网': 'cw', '围网': 'ww', '拖网': 'tw'}
-    fig = plt.figure(figsize=(8, 4))
-    plt.subplot(2, 2, 1)
-    train = pd.read_csv('train_round2.csv')
-    left = train[train['渔船ID'] == ids[0]]
-    left_type = left['type'].map(map_net).min()
-    plt.scatter(left['lat'], left['lon'], color='blue')
+    train = pd.read_csv(train_file)
+    train = train[train['渔船ID'] == ids[0]].sort_values('time')
+
     ais = pd.read_csv(f'{ais_file}/{ids[2]}.csv')
-    ais = ais[ais['ais_id'] == ids[1]]
-    plt.subplot(2, 2, 2)
-    plt.scatter(ais['lat'], ais['lon'], color='red')
-    fig.suptitle(f'match ID:{ids[0]}, type: {left_type}, ais_id:{ids[1]}, ais_file:{ids[2]}')
-    plt.show()
+    ais = ais[ais['ais_id'] == ids[1]].sort_values('time')
+
+    distance, _ = fastdtw(train[['lat', 'lon']].values, ais[['lat', 'lon']].values, dist=euclidean)
+    if distance < threshold:
+        fig = plt.figure(figsize=(8, 4))
+        plt.subplot(2, 2, 1)
+        net_type = train['type'].map(map_net).min()
+        plt.scatter(train['lat'], train['lon'], color='blue')
+        plt.subplot(2, 2, 2)
+        plt.scatter(ais['lat'], ais['lon'], color='red')
+        fig.suptitle(f'match ID:{ids[0]}, type: {net_type}, ais_id:{ids[1]}, ais_file:{ids[2]}')
+        plt.show()
 
 
 # 每日小时的渔船count
@@ -171,7 +178,7 @@ def show_cluster(df, use_cols, n_clusters):
 if __name__ == "__main__":
     save_path = 'match.csv'
     ais_path = 'round2_ais_20200310'
-    match_result = match_ship_in_ais('train_round2.csv', ais_path, 0.5, cnt_limit=50)
+    match_result = match_ship_in_ais_step1('train_round2.csv', ais_path, 0.5, cnt_limit=50)
     match_result.to_csv(save_path, index=False)
     for m in match_result[['ID', 'ais_id', 'ais_file_name']].values:
-        compare_plot(m, ais_path)
+        match_ship_in_ais_step2(m, 'train_round2.csv', ais_path, 50)
