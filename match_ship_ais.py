@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:juzphy
-# datetime:2020/3/14 11:07 下午
+
 
 import os
 import pandas as pd
