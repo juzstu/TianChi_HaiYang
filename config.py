@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:juzphy
-# datetime:2020/2/29 22:05 下午
 
 
 class Config:
