@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:juzphy
-# datetime:2020/3/14 11:01 下午
 
 
 # reference: https://github.com/vinsci/geohash
