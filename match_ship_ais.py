@@ -15,7 +15,7 @@ from fastdtw import fastdtw
 from scipy.spatial.distance import euclidean
 
 
-# step 1：粗匹配
+# step 1：粗匹配，也可对每个ID对应的lat-lon集合进行采样后再计算交集，效率会大大提升。
 def match_ship_in_ais_step1(train_file, ais_file, threshold, cnt_limit=50):
     paths = os.listdir(ais_file)
     match_df = pd.DataFrame()
