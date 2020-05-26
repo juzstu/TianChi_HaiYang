@@ -12,6 +12,9 @@
 - 代码的大部分特征均为向量特征，包括tfidf、count_vec、word2vec等，不保证别的机器可以复现结果。
 - 库安装 pip --no-cache-dir install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/
 
+## 复赛训练集链接
+https://tianchi.aliyun.com/notebook-ai/home?operaType=1#datasetLabId=63771&operaType=2
+
 #### 感谢队友在此次比赛的辛苦付出，祝OTTO在未来的比赛中可以再接再厉，同时OTTO也希望和更多的数据挖掘和算法爱好者的交流，非诚勿扰。
 #### 以下为队友的联系方式，欢迎关注
 ##### wbbhcb
