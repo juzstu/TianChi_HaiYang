@@ -16,6 +16,8 @@
 https://tianchi.aliyun.com/notebook-ai/home?operaType=1#datasetLabId=63771&operaType=2
 
 #### 感谢队友在此次比赛的辛苦付出，祝OTTO在未来的比赛中可以再接再厉，同时OTTO也希望和更多的数据挖掘和算法爱好者的交流，非诚勿扰。
+#### 团队公众号
+OTTO Data Lab
 #### 以下为队友的联系方式，欢迎关注
 ##### wbbhcb
 
