@@ -19,7 +19,7 @@ https://tianchi.aliyun.com/notebook-ai/home?operaType=1#datasetLabId=63771&opera
 #### 团队公众号
 OTTO Data Lab
 
-![image](https://github.com/juzstu/TianChi_HaiYang/blob/master/otto_data_lab.png)
+![image](https://github.com/juzstu/TianChi_HaiYang/raw/master/otto_data_lab.png)
 #### 以下为队友的联系方式，欢迎关注
 ##### wbbhcb
 
