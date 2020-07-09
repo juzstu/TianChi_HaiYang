@@ -3,8 +3,8 @@
 
 # 团队名称：Pursuing the Past Youth
 ## 初赛：Rank1
-## 复赛：Rank1
-以上排名均为算法线上赛的成绩。
+## 复赛：Rank2
+## 决赛：Rank2
 
 ## 代码说明：
 - 模型代码文件名为hy.py，match_ship_ais.py为渔船和AIS数据的匹配代码。
